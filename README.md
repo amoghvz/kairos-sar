@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="docs/screenshots/banner.png" alt="Kairos" width="720" />
-</p>
-
 # Kairos
 
 Ask the Earth a question in plain language. Kairos runs a real satellite radar analysis and draws the answer on a 3D globe.
