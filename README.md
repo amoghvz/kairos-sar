@@ -22,10 +22,6 @@ Almost nobody uses it. The data comes as gigabyte-sized files that need speciali
 - **Accounts are optional.** Signed-in users get saved analyses and alerts on new satellite passes over watched areas (Firebase + Firestore). Everything else works logged out.
 - **Installable app.** Kairos is a progressive web app: install it from the browser and it opens standalone with its own icon, with the app shell cached for instant loads.
 
-<p align="center">
-  <img src="docs/screenshots/landing.png" alt="Kairos landing screen" width="720" />
-</p>
-
 ## How a question becomes a map
 
 1. The frontend sends your question, plus the current viewport and recent chat turns, to the FastAPI backend.
