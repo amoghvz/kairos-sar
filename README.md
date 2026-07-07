@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="docs/screenshots/banner.png" alt="Kairos" width="720" />
-</p>
-
 # Kairos
 
 Ask the Earth a question in plain language. Kairos runs a real satellite radar analysis and draws the answer on a 3D globe.
@@ -25,10 +21,6 @@ Almost nobody uses it. The data comes as gigabyte-sized files that need speciali
 - **Share and embed.** Any result becomes a reproducible link that reruns the exact same analysis for whoever opens it, no login needed. Results also export as GeoTIFF and as a methodology report.
 - **Accounts are optional.** Signed-in users get saved analyses and alerts on new satellite passes over watched areas (Firebase + Firestore). Everything else works logged out.
 - **Installable app.** Kairos is a progressive web app: install it from the browser and it opens standalone with its own icon, with the app shell cached for instant loads.
-
-<p align="center">
-  <img src="docs/screenshots/landing.png" alt="Kairos landing screen" width="720" />
-</p>
 
 ## How a question becomes a map
 
