@@ -18,9 +18,11 @@ async def lifespan(app: FastAPI):
         )
     try:
         ee_creds = os.getenv("EE_CREDENTIALS")
+        print(f"[kairos] build check v2 | EE_CREDENTIALS present: {bool(ee_creds)}, length: {len(ee_creds) if ee_creds else 0}")
         if ee_creds:
             import json
             key_dict = json.loads(ee_creds)
+            print(f"[kairos] service account email: {key_dict.get('client_email')}")
             credentials = ee.ServiceAccountCredentials(
                 key_dict["client_email"], key_data=ee_creds
             )
@@ -32,6 +34,12 @@ async def lifespan(app: FastAPI):
         print(f"[kairos] GEE initialization FAILED: {e}")
         print("[kairos] Run: earthengine authenticate")
         raise
+
+    from watch import store as feed_store
+    from watch import sweeper as feed_sweeper
+
+    feed_store.init_db()
+    feed_sweeper.start_scheduler()
     yield
 
 app = FastAPI(
@@ -69,6 +77,8 @@ from api.impact import router as impact_router
 from api.events import router as events_router
 from api.alerts import router as alerts_router
 from api.interpret import router as interpret_router
+from api.feed import router as feed_router
+from api.districts import router as districts_router
 
 app.include_router(analyze_router)
 app.include_router(query_router)
@@ -81,6 +91,8 @@ app.include_router(impact_router)
 app.include_router(events_router)
 app.include_router(alerts_router)
 app.include_router(interpret_router)
+app.include_router(feed_router)
+app.include_router(districts_router)
 
 
 @app.get("/health")
