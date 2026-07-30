@@ -6,6 +6,7 @@ import {
   Home,
   Loader2,
   MapPin,
+  Printer,
   Telescope,
   TrendingDown,
   Waves,
@@ -16,6 +17,7 @@ import { type PlaceHit } from "../../api/myplace";
 import { runAnalyze } from "../../api/analyze";
 import { applyResultToGlobe } from "../../lib/applyResult";
 import { plainSentence } from "../../lib/plain";
+import { openPlaceReport } from "../../lib/placeReport";
 import PlaceSearch from "../PlaceSearch";
 import type { AnalysisResult } from "../../types/analysis";
 
@@ -140,8 +142,25 @@ export default function MyPlacePanel({ onClose }: { onClose: () => void }) {
       bbox: place.bbox.join(","),
       label: place.label ?? "My place",
     });
+    if (place.lon != null && place.lat != null) {
+      params.set("lon", String(place.lon));
+      params.set("lat", String(place.lat));
+    }
     location.hash = `foresight&${params.toString()}`;
-    location.reload();
+  }
+
+  function printReport() {
+    if (!place?.label) return;
+    const lines = CHECKS.filter((c) => results[c.type]).map((c) => ({
+      label: c.label,
+      sentence: plainSentence(
+        c.type,
+        results[c.type].headline_stat.value,
+        results[c.type].data_date
+      ),
+    }));
+    if (!lines.length) return;
+    openPlaceReport({ placeName: place.label, scans: lines });
   }
 
   function reset() {
@@ -169,7 +188,7 @@ export default function MyPlacePanel({ onClose }: { onClose: () => void }) {
     <motion.aside
       initial={{ opacity: 0, x: 16 }}
       animate={{ opacity: 1, x: 0 }}
-      className="absolute z-30 max-sm:inset-x-3 max-sm:bottom-24 max-sm:max-h-[58dvh] sm:right-20 sm:top-1/2 sm:-translate-y-1/2 sm:w-80 sm:max-h-[82vh] overflow-y-auto rounded-2xl bg-surface/95 backdrop-blur ring-1 ring-line shadow-panel p-4 space-y-4"
+      className="absolute z-30 max-sm:inset-x-3 max-sm:bottom-24 max-sm:max-h-[58dvh] sm:right-20 sm:top-20 sm:bottom-36 sm:w-80 overflow-y-auto rounded-2xl bg-surface/95 backdrop-blur ring-1 ring-line shadow-panel p-4 space-y-4"
     >
       <div className="flex items-center justify-between">
         <span className="font-mono text-[10px] tracking-[0.2em] text-dim">
@@ -306,13 +325,21 @@ export default function MyPlacePanel({ onClose }: { onClose: () => void }) {
           )}
 
           {reportReady && (
-            <button
-              onClick={openForesight}
-              className="w-full h-10 rounded-xl ring-1 ring-line text-sm text-ink hover:ring-teal/50 transition flex items-center justify-center gap-2"
-            >
-              <Telescope size={14} />
-              What could happen here? Open Foresight
-            </button>
+            <>
+              <button
+                onClick={openForesight}
+                className="w-full h-10 rounded-xl ring-1 ring-line text-sm text-ink hover:ring-teal/50 transition flex items-center justify-center gap-2"
+              >
+                <Telescope size={14} />
+                What could happen here? Open Foresight
+              </button>
+              <button
+                onClick={printReport}
+                className="w-full h-10 rounded-xl ring-1 ring-line text-xs text-dim hover:text-ink transition flex items-center justify-center gap-1.5"
+              >
+                <Printer size={13} /> Print or save this report
+              </button>
+            </>
           )}
         </>
       )}
